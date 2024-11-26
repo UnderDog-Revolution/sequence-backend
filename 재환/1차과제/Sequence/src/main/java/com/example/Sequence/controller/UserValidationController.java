@@ -6,6 +6,7 @@ import com.example.Sequence.entity.User;
 import com.example.Sequence.service.UserService;
 import com.example.Sequence.util.JwtUtil;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -22,44 +23,68 @@ public class UserValidationController {
     private final UserService userService;
     private final JwtUtil jwtUtil;
 
-    @PostMapping("/validate")
-    public ResponseEntity<?> validateUser(@RequestHeader("Authorization") String token,
-                                          @RequestParam String userId) {
-        log.debug("Received validation request - Token: {}, UserId: {}", token, userId);
+    @GetMapping("/validate")
+    public ResponseEntity<?> validateUser(
+        @RequestHeader("Authorization") String token,
+        @RequestParam String userId,
+        @RequestParam String username
+    ) {
+        log.info("=== Received Token ===");
+        log.info("Raw token: {}", token);
+        log.info("userId: {}", userId);
+        log.info("username: {}", username);
+        
         try {
-            // Bearer 토큰 처리
             String actualToken = token.startsWith("Bearer ") ? token.substring(7) : token;
-            log.debug("Processing token: {}", actualToken);
+            log.info("Processed token: {}", actualToken);
+            
+            try {
+                Claims claims = jwtUtil.validateAndGetClaims(actualToken);
+                String tokenUserId = claims.get("userId", String.class);
+                log.info("=== Token Validation ===");
+                log.info("Token userId: {}", tokenUserId);
+                log.info("Request userId: {}", userId);
+                
+                if (!tokenUserId.equals(userId)) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                            .body(new ValidationResponse(false, "토큰의 사용자와 요청 사용자가 일치하지 않습니다."));
+                }
 
-            // 토큰 검증
-            Claims claims = jwtUtil.validateAndGetClaims(actualToken);
-            String tokenUserId = claims.get("userId", String.class);
-            log.debug("Token userId: {}, Request userId: {}", tokenUserId, userId);
+                User user = userService.findById(userId);
+                if (user == null) {
+                    log.info("User not found with id: {}", userId);
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                            .body(new ValidationResponse(false, "존재하지 않는 사용자입니다."));
+                }
 
-            // 토큰의 사용자 아이디와 전달받은 사용자 아이디가 일치하는지 확인
-            if (!tokenUserId.equals(userId)) {
-                log.warn("UserId mismatch - Token: {}, Request: {}", tokenUserId, userId);
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(new ErrorResponse("토큰의 사용자와 요청 사용자가 일치하지 않습니다."));
+                log.info("=== Username Validation ===");
+                log.info("DB username: '{}'", user.getName());
+                log.info("Request username: '{}'", username);
+                log.info("DB username length: {}", user.getName().length());
+                log.info("Request username length: {}", username.length());
+                log.info("Are they equal? {}", user.getName().equals(username));
+                
+                if (!user.getName().equals(username)) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                            .body(new ValidationResponse(false, "사용자 이름 검증 실패"));
+                }
+
+                return ResponseEntity.ok(new ValidationResponse(true, "유효한 사용자입니다."));
+                
+            } catch (ExpiredJwtException e) {
+                log.error("Token has expired");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new ValidationResponse(false, "토큰이 만료되었습니다. 다시 로그인해주세요."));
+            } catch (Exception e) {
+                log.error("Token validation error: {}", e.getMessage());
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new ValidationResponse(false, "유효하지 않은 토큰입니다."));
             }
-
-            // 사용자 존재 여부 확인
-            boolean exists = userService.existsByUserId(userId);
-            log.debug("User exists check result: {}", exists);
-
-            if (!exists) {
-                log.warn("User not found: {}", userId);
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(new ErrorResponse("존재하지 않는 사용자입니다."));
-            }
-
-            log.debug("Validation successful for userId: {}", userId);
-            return ResponseEntity.ok(new ValidationResponse(true, "유효한 사용자입니다."));
 
         } catch (Exception e) {
             log.error("Validation error: ", e);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new ErrorResponse("유효하지 않은 토큰입니다."));
+                    .body(new ValidationResponse(false, "인증에 실패했습니다."));
         }
     }
 
