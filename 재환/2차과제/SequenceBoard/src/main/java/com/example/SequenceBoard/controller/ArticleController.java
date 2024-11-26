@@ -32,7 +32,7 @@ public class ArticleController {
         
         log.debug("AuthenticatedUserId: {}", authenticatedUserId);
         
-        if (userValidationService.validateUser(token, authenticatedUserId)) {
+        if (userValidationService.validateUser(token, authenticatedUserId, requestDto.getUsername())) {
             ArticleResponseDto response = articleService.createArticle(requestDto);
             return ResponseEntity.ok(response);
         }

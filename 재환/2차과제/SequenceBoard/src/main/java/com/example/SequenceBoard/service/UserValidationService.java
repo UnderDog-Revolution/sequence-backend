@@ -18,29 +18,24 @@ public class UserValidationService {
     
     private final AuthServiceClient authServiceClient;
     
-    @Cacheable(value = "userValidation", key = "#userId")
-    @CircuitBreaker(name = "validateUser", fallbackMethod = "validateUserFallback")
-    public boolean validateUser(String token, String userId) {
+    public boolean validateUser(String token, String userId, String username) {
         try {
-            log.debug("Sending validation request - Token: {}, UserId: {}", token, userId);
+            log.info("Sending GET validation request with params - userId: {}, username: {}", userId, username);
             
             ResponseEntity<ValidationResponse> response = 
-                authServiceClient.validateUser(token, userId);
+                authServiceClient.validateUser(token, userId, username);
             
-            log.debug("Validation response - Status: {}, Body: {}", 
-                response.getStatusCode(), 
-                response.getBody());
-                
+            log.info("Received validation response - Status: {}", response.getStatusCode());
+            
+            if (response.getBody() != null) {
+                log.info("Response valid: {}, message: {}", response.getBody().isValid(), response.getBody().getMessage());
+            }
+            
             return response.getBody() != null && response.getBody().isValid();
             
         } catch (FeignException e) {
             log.error("User validation failed: {}", e.getMessage());
             return false;
         }
-    }
-    
-    private boolean validateUserFallback(String token, String userId, Exception e) {
-        log.warn("Circuit breaker fallback for user {}: {}", userId, e.getMessage());
-        return false;
     }
 } 
