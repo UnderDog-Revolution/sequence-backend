@@ -27,10 +27,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         log.debug("Extracted token: {}", token);
         
         if (token != null && jwtUtil.validateToken(token)) {
-            String username = jwtUtil.extractName(token);
-            log.debug("Extracted username: {}", username);
+            String userId = jwtUtil.extractUserId(token);
+            log.debug("Extracted userId: {}", userId);
             UsernamePasswordAuthenticationToken authentication = 
-                new UsernamePasswordAuthenticationToken(username, null, null);
+                new UsernamePasswordAuthenticationToken(userId, null, null);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } else {
             log.debug("Token validation failed");

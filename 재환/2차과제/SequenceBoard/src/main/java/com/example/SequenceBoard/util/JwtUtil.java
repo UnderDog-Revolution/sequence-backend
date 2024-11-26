@@ -19,8 +19,8 @@ public class JwtUtil {
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
     
-    public String extractUsername(String token) {
-        return extractClaim(token).getSubject();
+    public String extractUserId(String token) {
+        return extractClaim(token, claims -> claims.get("userId", String.class));
     }
     
     public boolean validateToken(String token) {
@@ -51,4 +51,4 @@ public class JwtUtil {
     public String extractName(String token) {
         return extractClaim(token, claims -> claims.get("username", String.class));
     }
-} 
+}

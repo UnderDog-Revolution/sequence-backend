@@ -12,6 +12,6 @@ public interface AuthServiceClient {
     @PostMapping("/api/auth/validate")
     ResponseEntity<ValidationResponse> validateUser(
         @RequestHeader("Authorization") String token,
-        @RequestParam String username
+        @RequestParam String userId
     );
 } 

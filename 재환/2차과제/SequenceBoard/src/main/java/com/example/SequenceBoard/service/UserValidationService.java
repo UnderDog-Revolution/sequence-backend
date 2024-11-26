@@ -18,12 +18,19 @@ public class UserValidationService {
     
     private final AuthServiceClient authServiceClient;
     
-    @Cacheable(value = "userValidation", key = "#username")
+    @Cacheable(value = "userValidation", key = "#userId")
     @CircuitBreaker(name = "validateUser", fallbackMethod = "validateUserFallback")
-    public boolean validateUser(String token, String username) {
+    public boolean validateUser(String token, String userId) {
         try {
+            log.debug("Sending validation request - Token: {}, UserId: {}", token, userId);
+            
             ResponseEntity<ValidationResponse> response = 
-                authServiceClient.validateUser(token, username);
+                authServiceClient.validateUser(token, userId);
+            
+            log.debug("Validation response - Status: {}, Body: {}", 
+                response.getStatusCode(), 
+                response.getBody());
+                
             return response.getBody() != null && response.getBody().isValid();
             
         } catch (FeignException e) {
@@ -32,8 +39,8 @@ public class UserValidationService {
         }
     }
     
-    private boolean validateUserFallback(String token, String username, Exception e) {
-        log.warn("Circuit breaker fallback for user {}: {}", username, e.getMessage());
+    private boolean validateUserFallback(String token, String userId, Exception e) {
+        log.warn("Circuit breaker fallback for user {}: {}", userId, e.getMessage());
         return false;
     }
 } 

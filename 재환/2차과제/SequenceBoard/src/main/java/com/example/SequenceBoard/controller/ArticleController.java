@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @Slf4j
 @RestController
@@ -24,14 +25,18 @@ public class ArticleController {
         @RequestBody ArticleRequestDto requestDto,
         @RequestHeader("Authorization") String token
     ) {
-        String username = requestDto.getUsername();
+        String authenticatedUserId = SecurityContextHolder.getContext()
+            .getAuthentication()
+            .getPrincipal()
+            .toString();
         
-        boolean isValid = userValidationService.validateUser(token, username);
-        if (!isValid) {
-            throw new UnauthorizedException("존재하지 않는 사용자입니다.");
+        log.debug("AuthenticatedUserId: {}", authenticatedUserId);
+        
+        if (userValidationService.validateUser(token, authenticatedUserId)) {
+            ArticleResponseDto response = articleService.createArticle(requestDto);
+            return ResponseEntity.ok(response);
         }
         
-        ArticleResponseDto response = articleService.createArticle(requestDto, username);
-        return ResponseEntity.ok(response);
+        throw new UnauthorizedException("인증되지 않은 사용자입니다.");
     }
 } 

@@ -17,11 +17,11 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
     
     @Transactional
-    public ArticleResponseDto createArticle(ArticleRequestDto requestDto, String username) {
+    public ArticleResponseDto createArticle(ArticleRequestDto requestDto) {
         Article article = new Article();
         article.setTitle(requestDto.getTitle());
         article.setContent(requestDto.getContent());
-        article.setWriter(username);
+        article.setWriter(requestDto.getUsername());
         article.setCreatedAt(LocalDateTime.now());
         
         Article savedArticle = articleRepository.save(article);
