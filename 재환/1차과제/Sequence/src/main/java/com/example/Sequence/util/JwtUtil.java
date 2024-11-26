@@ -19,17 +19,28 @@ public class JwtUtil {
     private final long ACCESS_TOKEN_VALIDITY = 30 * 60 * 1000L; // 30분
     private final long REFRESH_TOKEN_VALIDITY = 7 * 24 * 60 * 60 * 1000L; // 7일
 
-    public String generateAccessToken(String username, String name) {
-        return generateToken(username, name, ACCESS_TOKEN_VALIDITY);
-    }
-
-    public String generateRefreshToken(String username) {
-        return generateToken(username, null, REFRESH_TOKEN_VALIDITY);
-    }
-
-    private String generateToken(String username, String name, long validity) {
+    public String generateAccessToken(String userId, String name) {
         Claims claims = Jwts.claims();
-        claims.put("username", username);
+        claims.put("userId", userId);
+        if (name != null) {
+            claims.put("name", name);
+        }
+        
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALIDITY))
+                .signWith(getSignKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public String generateRefreshToken(String userId) {
+        return generateToken(userId, null, REFRESH_TOKEN_VALIDITY);
+    }
+
+    private String generateToken(String userId, String name, long validity) {
+        Claims claims = Jwts.claims();
+        claims.put("userId", userId);
         if (name != null) {
             claims.put("name", name);
         }

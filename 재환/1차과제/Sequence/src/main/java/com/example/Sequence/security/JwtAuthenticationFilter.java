@@ -30,7 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 var claims = jwtUtil.validateAndGetClaims(token);
                 var authentication = new UsernamePasswordAuthenticationToken(
-                    claims.getSubject(), 
+                    claims.get("userId", String.class), 
                     null, 
                     Collections.emptyList()
                 );

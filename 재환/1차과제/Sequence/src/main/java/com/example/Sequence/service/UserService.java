@@ -15,6 +15,8 @@ import com.example.Sequence.entity.RefreshToken;
 import com.example.Sequence.repository.RefreshTokenRepository;
 import java.time.Instant;
 import org.springframework.transaction.annotation.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +25,7 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -108,8 +111,11 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public boolean existsByUsername(String username) {
-        return userRepository.findByName(username).isPresent();
+    public boolean existsByUserId(String userId) {
+        log.debug("Checking existence for userId: {}", userId);
+        boolean exists = userRepository.findById(userId).isPresent();
+        log.debug("User exists result: {}", exists);
+        return exists;
     }
 
     @Transactional
