@@ -1,0 +1,13 @@
+services:
+  api_gateway:
+    image: seungbinjo/api-gateway:v2.4
+    container_name: api-gateway
+    ports:
+      - "8080:8080" # 외부 포트 8085에서 API Gateway에 접근
+    networks:
+      - app-global-network
+
+networks:
+  app-global-network:
+    name: app-global-network
+    driver: bridge

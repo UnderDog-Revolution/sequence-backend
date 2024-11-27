@@ -1,0 +1,37 @@
+services:
+  mariadb_login_logout:
+    image: mariadb:latest
+    container_name: mariadb-login-logout
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: db_login_logout
+      MYSQL_USER: user1
+      MYSQL_PASSWORD: pass1
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data_login_logout:/var/lib/mysql
+    networks:
+      - app-global-network
+
+  login_logout_service:
+    image: seungbinjo/login_logout:v2.4
+    container_name: login-logout-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mariadb_login_logout:3306/db_login_logout
+      SPRING_DATASOURCE_USERNAME: user1
+      SPRING_DATASOURCE_PASSWORD: pass1
+    ports:
+      - "8081:8080"
+    depends_on:
+      - mariadb_login_logout
+    networks:
+      - app-global-network
+
+networks:
+  app-global-network:
+    name: app-global-network
+    driver: bridge
+
+volumes:
+  mariadb_data_login_logout:
