@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  sequence-Board:
+    build:
+      context: /mnt/e/Github_Study/Sequence/SequenceBoard
+      dockerfile: Dockerfile 
+    image: cbkjh0225/sequenceboard:sequence
+    ports:
+      - "8081:8080"
+    depends_on:
+      - mariadb
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/sequenceboard
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 1234
+
+  mariadb: 
+    image: cbkjh0225/databaseboard:mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: sequenceBoard
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 1234
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./mariadb_data:/var/lib/mysql
+
+volumes:
+  mariadb_data:
