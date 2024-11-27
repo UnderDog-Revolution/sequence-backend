@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  spring-app:
+    image: cbkjh0225/sequence:sequence
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mariadb
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/sequence
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 1234
+
+  mariadb:
+    image: cbkjh0225/database:mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: sequence
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 1234
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mariadb_data:/var/lib/mysql
+
+volumes:
+  mariadb_data:
