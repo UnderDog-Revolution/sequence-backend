@@ -1,8 +1,8 @@
 services:
   # 두 번째 스프링 애플리케이션: 게시판 처리
-  mariadb_notice_board:
-    image: mariadb:latest
-    container_name: mariadb-notice-board
+  db_notice_board:
+    image: seungbinjo/notice_board_db:v1.0
+    container_name: db-notice-board
     environment:
       MYSQL_ROOT_PASSWORD: rootpass
       MYSQL_DATABASE: db_notice_board
@@ -11,7 +11,7 @@ services:
     ports:
       - "3307:3306"  # 외부 포트는 3309로 변경, 내부 포트는 3306
     volumes:
-      - mariadb_data_notice_board:/var/lib/mysql
+      - db_data_notice_board:/var/lib/mysql
     networks:
       - app-global-network
 
@@ -19,14 +19,14 @@ services:
     image: seungbinjo/notice_board:v2.4
     container_name: notice-board-service
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mariadb_notice_board:3306/db_notice_board
+      SPRING_DATASOURCE_URL: jdbc:mysql://db_notice_board:3306/db_notice_board
       SPRING_DATASOURCE_USERNAME: user2
       SPRING_DATASOURCE_PASSWORD: pass2
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
     ports:
       - "8082:8080"
     depends_on:
-      - mariadb_notice_board
+      - db_notice_board
     networks:
       - app-global-network
 
@@ -36,4 +36,4 @@ networks:
     driver: bridge
 
 volumes:
-  mariadb_data_notice_board:
+  db_data_notice_board:
