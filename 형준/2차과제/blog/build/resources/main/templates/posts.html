@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>게시글 목록</h1>
+    <a href="/create">
+        <h2>작성하기</h2>
+    </a>
+    <div th:each="post: ${posts}">
+        <a th:href="@{/posts/{id}(id = ${post.id})}">
+            <h3 th:text="${post.title}">게시글 제목</h3>
+        </a>
+    </div>
+</body>
+</html>

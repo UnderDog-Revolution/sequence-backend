@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.example.user.UserApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-11-18T15:20:57" hostname="chohyungjun-ui-MacBookPro.local" time="0.347">
+  <properties/>
+  <testcase name="contextLoads()" classname="com.example.user.UserApplicationTests" time="0.347"/>
+  <system-out><![CDATA[00:20:55.477 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.example.user.UserApplicationTests]: UserApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+00:20:55.529 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.example.user.UserApplication for test class com.example.user.UserApplicationTests
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.5)
+
+2024-11-19T00:20:55.699+09:00  INFO 31562 --- [user] [    Test worker] com.example.user.UserApplicationTests    : Starting UserApplicationTests using Java 17.0.10 with PID 31562 (started by june in /Users/june/Spring learning/user)
+2024-11-19T00:20:55.700+09:00  INFO 31562 --- [user] [    Test worker] com.example.user.UserApplicationTests    : No active profile set, falling back to 1 default profile: "default"
+2024-11-19T00:20:55.962+09:00  INFO 31562 --- [user] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-11-19T00:20:55.984+09:00  INFO 31562 --- [user] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 19 ms. Found 1 JPA repository interface.
+2024-11-19T00:20:56.210+09:00  INFO 31562 --- [user] [    Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-11-19T00:20:56.232+09:00  INFO 31562 --- [user] [    Test worker] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2024-11-19T00:20:56.248+09:00  INFO 31562 --- [user] [    Test worker] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2024-11-19T00:20:56.382+09:00  INFO 31562 --- [user] [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-11-19T00:20:56.395+09:00  INFO 31562 --- [user] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2024-11-19T00:20:56.439+09:00  INFO 31562 --- [user] [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.mariadb.jdbc.Connection@4b336cc8
+2024-11-19T00:20:56.440+09:00  INFO 31562 --- [user] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2024-11-19T00:20:56.819+09:00  INFO 31562 --- [user] [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-11-19T00:20:56.846+09:00  INFO 31562 --- [user] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-11-19T00:20:56.989+09:00  WARN 31562 --- [user] [    Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-11-19T00:20:56.998+09:00  INFO 31562 --- [user] [    Test worker] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name myUserDetailsService
+2024-11-19T00:20:57.028+09:00  INFO 31562 --- [user] [    Test worker] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2024-11-19T00:20:57.295+09:00  INFO 31562 --- [user] [    Test worker] com.example.user.UserApplicationTests    : Started UserApplicationTests in 1.693 seconds (process running for 2.213)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
