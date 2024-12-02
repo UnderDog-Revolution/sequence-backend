@@ -1,0 +1,37 @@
+services:
+  user_service:
+    image: june050312/user:latest
+    container_name: user_service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://user_db:3306/test
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 1234
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.mariadb.jdbc.Driver
+    ports:
+      - "8080:8080"
+    depends_on:
+      - user_db
+    networks:
+      - user-network
+
+  user_db:
+    image: mariadb:latest
+    container_name: user_db
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: test
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 1234
+    ports:
+      - "3307:3306"
+    volumes:
+      - user_data:/var/lib/mysql
+    networks:
+      - user-network
+
+networks:
+  user-network:
+    driver: bridge
+
+volumes:
+  user_data:
