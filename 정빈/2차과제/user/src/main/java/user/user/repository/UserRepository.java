@@ -1,8 +1,9 @@
-    package board.board.repository;
+    package user.user.repository;
 
 
-    import board.board.entity.User;
+
     import org.springframework.data.jpa.repository.JpaRepository;
+    import user.user.entity.User;
 
     import java.util.Optional;
 

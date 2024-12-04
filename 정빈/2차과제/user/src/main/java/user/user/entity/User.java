@@ -1,4 +1,5 @@
-package board.board.entity;
+package user.user.entity;
+
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,3 +25,4 @@ public class User {
     @Column(nullable = false)
     private String password;
 }
+

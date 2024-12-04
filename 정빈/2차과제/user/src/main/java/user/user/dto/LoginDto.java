@@ -1,4 +1,4 @@
-package board.board.dto;
+package user.user.dto;
 
 import lombok.Getter;
 import lombok.Setter;

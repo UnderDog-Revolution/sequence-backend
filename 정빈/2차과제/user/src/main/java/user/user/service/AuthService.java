@@ -1,14 +1,15 @@
-package board.board.service;
+package user.user.service;
 
 
-import board.board.dto.LoginDto;
-import board.board.dto.UserDto;
-import board.board.entity.User;
-import board.board.repository.UserRepository;
-import board.board.util.JwtUtil;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import user.user.dto.LoginDto;
+import user.user.dto.UserDto;
+import user.user.entity.User;
+import user.user.repository.UserRepository;
+import user.user.util.JwtUtil;
 
 @Service
 @RequiredArgsConstructor

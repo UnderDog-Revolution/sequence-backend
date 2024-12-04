@@ -4,29 +4,27 @@ services:
     build:
       context: .
     ports:
-      - "8081:8080" # Spring Boot 애플리케이션 포트
+      - "8080:8080" # Spring Boot 애플리케이션 포트
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mariadb://boarddb:3306/boarddb
+      SPRING_DATASOURCE_URL: jdbc:mariadb://localhost:3306/userdb
       SPRING_DATASOURCE_USERNAME: username
       SPRING_DATASOURCE_PASSWORD: userpassword
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
     depends_on:
-      - boarddb
+      - mariadb
 
-  boarddb:
+  mariadb:
     image: mariadb:latest
-    container_name: boarddb
+    container_name: mariadb
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: 123123
-      MYSQL_DATABASE: boarddb
+      MYSQL_DATABASE: userdb
       MYSQL_USER: username
       MYSQL_PASSWORD: userpassword
     ports:
-      - "3308:3306" # MariaDB 포트
+      - "3307:3306" # MariaDB 포트
     volumes:
-      - mariadb_board_data:/var/lib/mysql
-
+      - mariadb_data:/var/lib/mysql
 volumes:
-  mariadb_board_data:
-
+  mariadb_data:

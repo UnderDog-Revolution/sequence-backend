@@ -1,4 +1,4 @@
-package board.board.config;
+package user.user.config;
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
