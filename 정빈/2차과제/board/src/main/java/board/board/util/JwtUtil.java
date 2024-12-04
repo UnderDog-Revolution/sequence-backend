@@ -1,4 +1,4 @@
-package user.user.util;
+package board.board.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 
-import java.util.Date;
 
 @Component
 public class JwtUtil {
@@ -21,18 +20,6 @@ public class JwtUtil {
     @PostConstruct
     public void init() {
         keyBytes = secretKey.getBytes(); // 비밀 키를 바이트 배열로 변환
-    }
-
-    private static final long EXPIRATION_TIME = 86400000; // 1일
-
-    // JWT 생성
-    public String generateToken(String username) {
-        return Jwts.builder()
-                .setSubject(username) // JWT의 subject에 username 포함
-                .setIssuedAt(new Date()) // 생성 시간
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // 만료 시간
-                .signWith(SignatureAlgorithm.HS256, keyBytes) // HS256 알고리즘으로 서명
-                .compact();
     }
 
     // JWT에서 username 추출
