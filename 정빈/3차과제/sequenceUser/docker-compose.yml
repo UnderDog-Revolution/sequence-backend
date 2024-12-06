@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  spring-app:
+    build:
+      context: .
+    ports:
+      - "8084:8080" # Spring Boot 애플리케이션 포트
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://sequenceUser:3306/sequenceUser
+      SPRING_DATASOURCE_USERNAME: username
+      SPRING_DATASOURCE_PASSWORD: userpassword
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    depends_on:
+      - sequenceUser
+
+  sequenceUser:
+    image: mariadb:latest
+    container_name: sequenceUser
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 123123
+      MYSQL_DATABASE: sequenceUser
+      MYSQL_USER: username
+      MYSQL_PASSWORD: userpassword
+    ports:
+      - "3304:3306" # MariaDB 포트
+    volumes:
+      - mariadb_board_data:/var/lib/mysql
+
+volumes:
+  mariadb_board_data:
+
