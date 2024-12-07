@@ -2,6 +2,8 @@ package com.example.login_logout.member.controller;
 
 import com.example.login_logout.member.dto.LoginRequest;
 import com.example.login_logout.member.dto.LoginResponse;
+import com.example.login_logout.member.dto.NewAccessTokenRequest;
+import com.example.login_logout.member.dto.NewAccessTokenResponse;
 import com.example.login_logout.member.dto.RegisterRequest;
 import com.example.login_logout.member.service.MemberService;
 import jakarta.validation.Valid;
@@ -17,21 +19,30 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/api/member")
+@RequestMapping("/api")
 public class MemberController {
     private final MemberService memberService;
 
+    // 로그인
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest loginRequest) {
+        LoginResponse response = memberService.login(loginRequest);
+        return ResponseEntity.ok(response);
+    }
+
     // 회원가입
-    @PostMapping("/signup")
+    @PostMapping("/user")
     public ResponseEntity<String> signup(@RequestBody @Valid RegisterRequest registerRequest) {
         memberService.register(registerRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body("회원가입이 완료되었습니다.");
     }
 
-    // 로그인
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest loginRequest) {
-        String token = memberService.login(loginRequest);
-        return ResponseEntity.ok(new LoginResponse(token));
+    // 아이디 중복 확인
+
+    // JWT 재발급
+    @PostMapping("/token")
+    public ResponseEntity<NewAccessTokenResponse> refreshAccessToken(@RequestBody NewAccessTokenRequest request) {
+        NewAccessTokenResponse response = memberService.newAccessToken(request.getRefreshToken());
+        return ResponseEntity.ok(response);
     }
 }

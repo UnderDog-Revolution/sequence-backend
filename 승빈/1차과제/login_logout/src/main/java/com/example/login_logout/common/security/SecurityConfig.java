@@ -1,4 +1,4 @@
-package com.example.login_logout.security.config;
+package com.example.login_logout.common.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

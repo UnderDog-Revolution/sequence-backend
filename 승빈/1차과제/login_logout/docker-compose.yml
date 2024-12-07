@@ -1,6 +1,6 @@
 services:
   db_login_logout:
-    image: seungbinjo/login_logout_db:v1.0
+    image: seungbinjo/login_logout_db:v2.0
     container_name: db-login-logout
     environment:
       MYSQL_ROOT_PASSWORD: rootpass
@@ -15,7 +15,7 @@ services:
       - app-global-network
 
   login_logout_service:
-    image: seungbinjo/login_logout:v2.4
+    image: seungbinjo/login_logout:v3.0
     container_name: login-logout-service
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://db_login_logout:3306/db_login_logout
