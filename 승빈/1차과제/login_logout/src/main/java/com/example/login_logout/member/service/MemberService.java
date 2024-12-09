@@ -39,6 +39,7 @@ public class MemberService {
         member.setLoginId(registerRequest.getLoginId());
         member.setUsername(registerRequest.getUsername());
         member.setPassword(passwordEncoder.encode(registerRequest.getPassword())); // 비밀번호 암호화
+        member.setLoginId((registerRequest.getEmail()));
         memberRepository.save(member);
     }
 
