@@ -12,7 +12,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.io.IOException;
 
 @Service
@@ -32,6 +31,11 @@ public class MemberService {
         this.memberRefreshTokenRepository = memberRefreshTokenRepository;
     }
 
+    // 아이디 중복 확인
+    public boolean isUsernameExists(String username) {
+        return memberRepository.existsByUsername(username);
+    }
+
     // 회원가입
     @Transactional
     public void register(RegisterRequest registerRequest) throws IOException {
@@ -40,12 +44,11 @@ public class MemberService {
         }
 
         ImageHandler imageHandler = new ImageHandler();
-        String path = imageHandler.save(registerRequest.getProfileImage());
+        String profileImagePath = imageHandler.save(registerRequest.getProfileImage());
 
-        System.out.println("path : " + path);
+        System.out.println("profileImagePath : " + profileImagePath);
 
         Member member = new Member();
-
         member.setName(registerRequest.getName());
         member.setBirthDate(registerRequest.getBirthDate());
         member.setGender(registerRequest.getGender());
@@ -55,7 +58,7 @@ public class MemberService {
         member.setUsername(registerRequest.getUsername());
         member.setPassword(passwordEncoder.encode(registerRequest.getPassword())); // 비밀번호 암호화
 
-        member.setProfileImage(path);
+        member.setProfileImage(profileImagePath);
         member.setNickname(registerRequest.getNickname());
         member.setEducation(registerRequest.getEducation());
         member.setSkills(registerRequest.getSkills());
@@ -117,5 +120,3 @@ public class MemberService {
         return new NewAccessTokenResponse("success", newAccessToken);
     }
 }
-
-
