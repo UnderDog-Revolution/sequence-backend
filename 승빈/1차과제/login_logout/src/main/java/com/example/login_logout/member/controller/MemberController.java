@@ -12,9 +12,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.io.IOException;
 
 @Slf4j
 @Controller
@@ -32,7 +35,7 @@ public class MemberController {
 
     // 회원가입
     @PostMapping("/user")
-    public ResponseEntity<String> signup(@RequestBody @Valid RegisterRequest registerRequest) {
+    public ResponseEntity<String> signup(@ModelAttribute @Valid RegisterRequest registerRequest) throws IOException {
         memberService.register(registerRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body("회원가입이 완료되었습니다.");
     }

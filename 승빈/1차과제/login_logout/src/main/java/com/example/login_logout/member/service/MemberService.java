@@ -3,16 +3,17 @@ package com.example.login_logout.member.service;
 import com.example.login_logout.common.entity.MemberRefreshToken;
 import com.example.login_logout.common.exception.InvalidInputException;
 import com.example.login_logout.common.repository.MemberRefreshTokenRepository;
-import com.example.login_logout.member.dto.LoginResponse;
+import com.example.login_logout.member.dto.*;
 import com.example.login_logout.common.security.JwtTokenProvider;
-import com.example.login_logout.member.dto.LoginRequest;
-import com.example.login_logout.member.dto.NewAccessTokenResponse;
-import com.example.login_logout.member.dto.RegisterRequest;
 import com.example.login_logout.member.entity.Member;
+import com.example.login_logout.member.handler.ImageHandler;
 import com.example.login_logout.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.io.File;
+import java.io.IOException;
 
 @Service
 public class MemberService {
@@ -21,7 +22,10 @@ public class MemberService {
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRefreshTokenRepository memberRefreshTokenRepository;
 
-    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider, MemberRefreshTokenRepository memberRefreshTokenRepository) {
+    public MemberService(MemberRepository memberRepository,
+                         PasswordEncoder passwordEncoder,
+                         JwtTokenProvider jwtTokenProvider,
+                         MemberRefreshTokenRepository memberRefreshTokenRepository) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
@@ -30,30 +34,52 @@ public class MemberService {
 
     // 회원가입
     @Transactional
-    public void register(RegisterRequest registerRequest) {
+    public void register(RegisterRequest registerRequest) throws IOException {
         if (memberRepository.existsByUsername(registerRequest.getUsername())) {
             throw new IllegalArgumentException("이미 존재하는 사용자입니다.");
         }
 
+        ImageHandler imageHandler = new ImageHandler();
+        String path = imageHandler.save(registerRequest.getProfileImage());
+
+        System.out.println("path : " + path);
+
         Member member = new Member();
-        member.setLoginId(registerRequest.getLoginId());
+
+        member.setName(registerRequest.getName());
+        member.setBirthDate(registerRequest.getBirthDate());
+        member.setGender(registerRequest.getGender());
+        member.setPhone(registerRequest.getPhone());
+        member.setEmail(registerRequest.getEmail());
+        member.setAddress(registerRequest.getAddress());
         member.setUsername(registerRequest.getUsername());
         member.setPassword(passwordEncoder.encode(registerRequest.getPassword())); // 비밀번호 암호화
-        member.setLoginId((registerRequest.getEmail()));
+
+        member.setProfileImage(path);
+        member.setNickname(registerRequest.getNickname());
+        member.setEducation(registerRequest.getEducation());
+        member.setSkills(registerRequest.getSkills());
+        member.setDesiredRole(registerRequest.getDesiredRole());
+        member.setExperience(registerRequest.getExperience());
+        member.setCareer(registerRequest.getCareer());
+        member.setCertificationsAndAwards(registerRequest.getCertificationsAndAwards());
+        member.setPortfolioLink(registerRequest.getPortfolioLink());
+        member.setIntroduction(registerRequest.getIntroduction());
+
         memberRepository.save(member);
     }
 
     // 로그인
     @Transactional
     public LoginResponse login(LoginRequest loginRequest) {
-        Member member = memberRepository.findByLoginId(loginRequest.getLoginId())
+        Member member = memberRepository.findByUsername(loginRequest.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), member.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 올바르지 않습니다.");
         }
-        String accessToken = jwtTokenProvider.createAccessToken(member.getId(), member.getLoginId());
-        String refreshToken = jwtTokenProvider.createRefreshToken(member.getId(), member.getLoginId());
+        String accessToken = jwtTokenProvider.createAccessToken(member.getId(), member.getUsername());
+        String refreshToken = jwtTokenProvider.createRefreshToken(member.getId(), member.getUsername());
 
         // 기본 refresh token 확인
         MemberRefreshToken existingToken = memberRefreshTokenRepository.findByMember(member);
