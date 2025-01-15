@@ -5,8 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seq.deleteAccount.dto.ApiResponseData;
 import com.seq.deleteAccount.dto.ApiResponseError;
 import com.seq.deleteAccount.dto.Code;
-import com.seq.deleteAccount.entity.DeletedUserEntity;
-import com.seq.deleteAccount.repository.DeletedUserRepository;
 import com.seq.deleteAccount.repository.MemberRepository;
 import com.seq.deleteAccount.util.JwtDecoder;
 import com.seq.deleteAccount.service.DeletedUserService;
@@ -19,8 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import com.seq.deleteAccount.dto.AccountDto;
-
-import java.util.Arrays;
 
 
 @RestController
@@ -46,7 +42,7 @@ public class DeleteController {
     public ResponseEntity<?> deleteProcess(@RequestBody AccountDto user, HttpServletRequest request) {
 
         String tokenResult;
-        String token = jwtDecoder.getTokenFromCookies(request, "JWT");
+        String token = jwtDecoder.getTokenFromCookies(request, "jwt");
 
         if (token == null) {
             return ResponseEntity.status(Code.NULL_INPUT_VALUE.getStatus())
@@ -92,41 +88,12 @@ public class DeleteController {
             );
         }
 
-
-//        //외부 API를 통해 계정 정보 가져오기
-////        String externalApiUrl = "http://localhost:8081/api/user" + user.getUsername();
-//        String externalApiUrl = "http://localhost:8081/api/user/info";
-//        AccountDto externalAccount;
-//
-//        try {
-//            externalAccount = restTemplate.getForObject(externalApiUrl, AccountDto.class);
-//        } catch (Exception e) {
-//            return ResponseEntity.status(Code.CAN_NOT_FIND_RESOURCE.getStatus()).body(
-//                    ApiResponseError.of(Code.CAN_NOT_FIND_RESOURCE)
-//            );
-//        }
-
-
-//        //외부 계정 정보의 해시된 비밀번호와 입력된 비밀번호 비교
-//        if (!passwordEncoder.matches(user.getPassword(), externalAccount.getPassword())) {
-//            return ResponseEntity.status(Code.VALIDATION_ERROR.getStatus()).body(
-//                    ApiResponseError.of(Code.VALIDATION_ERROR, "비밀번호가 일치하지 않습니다.")
-//            );
-//        }
-
         //토큰의 유저 이름을 조회 비교
         if (!passwordEncoder.matches(user.getPassword(), externalUser.getPassword())){
             return ResponseEntity.status(Code.VALIDATION_ERROR.getStatus()).body(
                     ApiResponseError.of(Code.VALIDATION_ERROR, "비밀번호가 일치하지 않습니다.")
             );
         }
-
-//        //외부 계정 정보의 해시된 비밀번호와 입력된 비밀번호 비교
-//        if (!externalUser.getPassword().equals(user.getPassword())) {
-//            return ResponseEntity.status(Code.VALIDATION_ERROR.getStatus()).body(
-//                    ApiResponseError.of(Code.VALIDATION_ERROR, "비밀번호가 일치하지 않습니다.")
-//            );
-//        }
 
         // 삭제된 사용자 기록 저장
         deletedUserService.saveDeletedUser(

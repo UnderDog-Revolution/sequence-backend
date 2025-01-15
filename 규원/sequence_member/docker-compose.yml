@@ -17,11 +17,11 @@ services:
       - app-network # `db`와 동일한 네트워크에 연결
 
   delete-service:
-    image: heonchan/seq_del_spring
-#    image: seq_del_spring
-#    build:
-#      context: ./deleteAccount
-#      dockerfile: Dockerfile
+#    image: heonchan/seq_del_spring
+    image: seq_del_spring
+    build:
+      context: ./deleteAccount
+      dockerfile: Dockerfile
     restart: always
     ports:
       - "8081:8081"
