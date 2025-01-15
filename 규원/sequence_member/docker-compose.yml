@@ -1,10 +1,31 @@
 version: '3.8'
 services:
+
   sequence-service:
     image: highqualitycoffee/seq_mem_spring:latest
     container_name: seq_mem_spring
+    restart: always
     ports:
       - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://seq_mem_db:3306/member_database  # MariaDB의 서비스 이름을 사용하여 연결
+      - SPRING_DATASOURCE_USERNAME=gw
+      - SPRING_DATASOURCE_PASSWORD=7228
+    depends_on:
+      - db
+    networks: # 네트워크 설정
+      - app-network # `db`와 동일한 네트워크에 연결
+
+  delete-service:
+    image: heonchan/seq_del_spring
+#    image: seq_del_spring
+#    build:
+#      context: ./deleteAccount
+#      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8081:8081"
+    container_name: seq_del_spring
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mariadb://seq_mem_db:3306/member_database  # MariaDB의 서비스 이름을 사용하여 연결
       - SPRING_DATASOURCE_USERNAME=gw
@@ -44,6 +65,7 @@ services:
     networks: # 네트워크 설정
       - app-network # `db`와 동일한 네트워크에 연결
     restart: always # 컨테이너가 중단되었을 때 자동으로 재시작
+
 
 networks:
   app-network: # 사용자 정의 네트워크를 생성
