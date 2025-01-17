@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sequence.sequence_member.dto.MemberDTO;
 import sequence.sequence_member.repository.MemberRepository;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Data
@@ -30,15 +32,20 @@ public class AwardEntity {
     @Column
     private String awardDescription;
 
-    public static AwardEntity toAwardEntity(MemberDTO memberDTO, MemberEntity memberEntity){
-        AwardEntity awardEntity = new AwardEntity();
+    public static List<AwardEntity> toAwardEntity(MemberDTO memberDTO, MemberEntity memberEntity) {
+        List<AwardEntity> awardEntities = new ArrayList<>();
 
-        awardEntity.setAwardName(memberDTO.getAward_name());
-        awardEntity.setAwardDuration(memberDTO.getAward_duration());
-        awardEntity.setAwardDescription(memberDTO.getAward_description());
-        awardEntity.setMember(memberEntity);
+        for (int i = 0; i < memberDTO.getAwards().size(); i++) {
+            AwardEntity awardEntity = new AwardEntity();
 
-        return awardEntity;
+            awardEntity.setAwardName(memberDTO.getAwards().get(i).getAwardName());
+            awardEntity.setAwardDescription(memberDTO.getAwards().get(i).getAwardDescription());
+            awardEntity.setAwardDuration(memberDTO.getAwards().get(i).getAwardDuration());
+            awardEntity.setMember(memberEntity);
+
+            awardEntities.add(awardEntity);
+        }
+        return awardEntities;
     }
 
 }

@@ -11,12 +11,16 @@ import lombok.ToString;
 
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
+import sequence.sequence_member.entity.AwardEntity;
+import sequence.sequence_member.entity.CareerEntity;
 import sequence.sequence_member.entity.EducationEntity;
 import sequence.sequence_member.entity.EducationEntity.*;
+import sequence.sequence_member.entity.ExperienceEntity;
 import sequence.sequence_member.entity.MemberEntity.Gender;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -58,16 +62,11 @@ public class MemberDTO {
     private Date entrance_date;
     private Date graduation_date;
     private Degree degree;
-    private SkillCategory skill_category;
-    private ArrayList<DesiredJob> desiredJob;
-    private String activity_name;
-    private Date activity_duration;
-    private String activity_description;
-    private String career_name;
-    private Date career_duration;
-    private String career_description;
-    private String award_name;
-    private Date award_duration;
-    private String award_description;
+
+    private List<SkillCategory> skill_category;
+    private List<DesiredJob> desired_job;
+    private List<ExperienceEntity> experiences;
+    private List<CareerEntity> careers;
+    private List<AwardEntity> awards;
 
 }

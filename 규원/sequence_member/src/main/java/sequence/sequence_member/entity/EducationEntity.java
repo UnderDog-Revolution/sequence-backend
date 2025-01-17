@@ -2,12 +2,12 @@ package sequence.sequence_member.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import sequence.sequence_member.converter.DesiredJobConverter;
+import sequence.sequence_member.converter.SkillCategoryConverter;
 import sequence.sequence_member.dto.MemberDTO;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 @Data
@@ -39,18 +39,17 @@ public class EducationEntity {
     @Column(name = "degree", nullable = false)
     private Degree degree;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "skill_category", nullable = false)
-    private SkillCategory skillCategory;
+    @Convert(converter = SkillCategoryConverter.class)
+    @Column(name = "skill_category")
+    private List<SkillCategory> skillCategory;
 
 //    @Enumerated(EnumType.STRING)
-//    @Column(name = "desired_job", nullable = false)
-//    private List<DesiredJob> desiredJob;
+//    @Column(name = "desired_job")
+//    private DesiredJob desiredJob;
 
-    @ElementCollection(targetClass = DesiredJob.class)
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = DesiredJobConverter.class)
     @Column(name = "desired_job")
-    private List<DesiredJob> desiredJob = new ArrayList<>();
+    private List<DesiredJob> desiredJob;
 
     public enum Degree {
         ENROLLMENT, LEAVE_OF_ABSENCE, GRADUATION, MASTER, DOCTORATE, EXPELLED, DROPOUT;
@@ -72,13 +71,9 @@ public class EducationEntity {
         educationEntity.setEntranceDate(memberDTO.getEntrance_date());
         educationEntity.setGraduationDate(memberDTO.getGraduation_date());
         educationEntity.setDegree(memberDTO.getDegree());
+        educationEntity.setDesiredJob(memberDTO.getDesired_job());
         educationEntity.setSkillCategory(memberDTO.getSkill_category());
         educationEntity.setMember(memberEntity);
-
-        // DTO의 desiredJobs를 Entity로 설정
-        if (memberDTO.getDesiredJob() != null) {
-            educationEntity.setDesiredJob(new ArrayList<>(memberDTO.getDesiredJob()));
-        }
 
         return educationEntity;
     }
