@@ -36,13 +36,13 @@ public class DeleteController {
         this.memberRepository = memberRepository;
     }
 
-
+    // 사용자 탈퇴 API
     @DeleteMapping("/api/user/delete")
     @ResponseBody
     public ResponseEntity<?> deleteProcess(@RequestBody AccountDto user, HttpServletRequest request) {
 
         String tokenResult;
-        String token = jwtDecoder.getTokenFromCookies(request, "jwt");
+        String token = jwtDecoder.getTokenFromCookies(request, "access");
 
         if (token == null) {
             return ResponseEntity.status(Code.NULL_INPUT_VALUE.getStatus())
@@ -70,6 +70,13 @@ public class DeleteController {
         var result = memberRepository.findByUsername(username);
         var externalUser = result.get();
 
+        //중복 탈퇴 확인
+        if (deletedUserService.isDeletedUser(externalUser.getUsername())) {
+            return ResponseEntity.status(Code.DUPLICATE_RESOURCE.getStatus()).body(
+                    ApiResponseError.of(Code.DUPLICATE_RESOURCE, "이미 탈퇴된 계정입니다.")
+            );
+        }
+
         //빈칸 확인
         //Password와 ConfirmPassword 비교
         if (user.getPassword() == null || user.getPassword().isEmpty()) {
@@ -95,8 +102,16 @@ public class DeleteController {
             );
         }
 
+//        //토큰의 유저 이름을 조회 비교 (테스트용)
+//        if (!user.getPassword().equals(externalUser.getPassword())){
+//            return ResponseEntity.status(Code.VALIDATION_ERROR.getStatus()).body(
+//                    ApiResponseError.of(Code.VALIDATION_ERROR, "비밀번호가 일치하지 않습니다.")
+//            );
+//        }
+
         // 삭제된 사용자 기록 저장
         deletedUserService.saveDeletedUser(
+                externalUser.getId(),
                 externalUser.getUsername(),
                 true,
                 "사용자 탈퇴 요청"
@@ -106,6 +121,36 @@ public class DeleteController {
         return ResponseEntity.status(Code.SUCCESS.getStatus()).body(
                 ApiResponseData.of(externalUser, Code.SUCCESS.getMessage())
         );
+    }
+
+    // userId로 탈퇴 여부를 확인하는 API
+    @GetMapping("/api/user/delete/check/id/{id}")
+    @ResponseBody
+    public ResponseEntity<?> checkIfUserIsDeleted(@PathVariable("id") Long userId) {
+        // 탈퇴 여부 확인
+        boolean isDeleted = deletedUserService.isDeletedUser(userId);
+
+        // 응답 생성
+        if (isDeleted) {
+            return ResponseEntity.ok(ApiResponseData.of(userId, "탈퇴된 사용자입니다."));
+        } else {
+            return ResponseEntity.ok(ApiResponseData.of(userId, "탈퇴되지 않은 사용자입니다."));
+        }
+    }
+
+    // username으로 탈퇴 여부를 확인하는 API
+    @GetMapping("/api/user/delete/check/username/{username}")
+    @ResponseBody
+    public ResponseEntity<?> checkIfUserIsDeletedWithUsername(@PathVariable("username") String username) {
+        // 탈퇴 여부 확인
+        boolean isDeleted = deletedUserService.isDeletedUser(username);
+
+        // 응답 생성
+        if (isDeleted) {
+            return ResponseEntity.ok(ApiResponseData.of(username, "탈퇴된 사용자입니다."));
+        } else {
+            return ResponseEntity.ok(ApiResponseData.of(username, "탈퇴되지 않은 사용자입니다."));
+        }
     }
 
 }

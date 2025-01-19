@@ -40,6 +40,11 @@ public enum Code {
     ACCESS_DENIED(HttpStatus.FORBIDDEN, 40204, "접근 권한이 없습니다."),
 
     /**
+     * 데이터베이스 관련 409번대
+     */
+    DUPLICATE_RESOURCE(HttpStatus.CONFLICT, 40900, "이미 존재하는 항목입니다."),
+
+    /**
      * 500번대
      */
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 500, "예기치 못한 서버 오류가 발생했습니다.");

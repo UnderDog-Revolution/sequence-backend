@@ -7,4 +7,8 @@ import java.util.Optional;
 
 public interface DeletedUserRepository extends JpaRepository<DeletedUserEntity, Long> {
     Optional<DeletedUserEntity> findByUsername(String username);
+
+    boolean existsByUsername(String username);
+
+    boolean existsByUserId(Long userId);
 }
