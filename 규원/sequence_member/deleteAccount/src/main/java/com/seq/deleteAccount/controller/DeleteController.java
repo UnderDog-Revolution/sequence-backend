@@ -18,6 +18,8 @@ import org.springframework.web.client.RestTemplate;
 
 import com.seq.deleteAccount.dto.AccountDto;
 
+import java.util.Map;
+
 
 @RestController
 public class DeleteController {
@@ -124,33 +126,31 @@ public class DeleteController {
     }
 
     // userId로 탈퇴 여부를 확인하는 API
-    @GetMapping("/api/user/delete/check/id/{id}")
+    @GetMapping("/api/user/isDeleted/id/{id}")
     @ResponseBody
     public ResponseEntity<?> checkIfUserIsDeleted(@PathVariable("id") Long userId) {
         // 탈퇴 여부 확인
         boolean isDeleted = deletedUserService.isDeletedUser(userId);
 
         // 응답 생성
-        if (isDeleted) {
-            return ResponseEntity.ok(ApiResponseData.of(userId, "탈퇴된 사용자입니다."));
-        } else {
-            return ResponseEntity.ok(ApiResponseData.of(userId, "탈퇴되지 않은 사용자입니다."));
-        }
+        return ResponseEntity.ok(ApiResponseData.of(
+                Map.of("userId", userId, "isDeleted", isDeleted),
+                isDeleted ? "탈퇴된 사용자입니다." : "탈퇴되지 않은 사용자입니다."
+        ));
     }
 
     // username으로 탈퇴 여부를 확인하는 API
-    @GetMapping("/api/user/delete/check/username/{username}")
+    @GetMapping("/api/user/isDeleted/username/{username}")
     @ResponseBody
     public ResponseEntity<?> checkIfUserIsDeletedWithUsername(@PathVariable("username") String username) {
         // 탈퇴 여부 확인
         boolean isDeleted = deletedUserService.isDeletedUser(username);
 
         // 응답 생성
-        if (isDeleted) {
-            return ResponseEntity.ok(ApiResponseData.of(username, "탈퇴된 사용자입니다."));
-        } else {
-            return ResponseEntity.ok(ApiResponseData.of(username, "탈퇴되지 않은 사용자입니다."));
-        }
+        return ResponseEntity.ok(ApiResponseData.of(
+                Map.of("username", username, "isDeleted", isDeleted),
+                isDeleted ? "탈퇴된 사용자입니다." : "탈퇴되지 않은 사용자입니다."
+        ));
     }
 
 }
