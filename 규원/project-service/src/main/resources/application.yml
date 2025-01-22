@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: project-service
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+    properties:
+      hibernate:
+        format_sql: true
+    database-platform: org.hibernate.dialect.MariaDBDialect
+
+  datasource:
+    url: jdbc:mariadb://localhost:3307/member_database
+    username: gw
+    password: 7228
+    driver-class-name: org.mariadb.jdbc.Driver
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  jwt:
+    secret: Adsfvabewryethadbgnq4ertjadfhjmetDHJarkmyshfzdjykmrtejkymhndgThJymhfngbfc
