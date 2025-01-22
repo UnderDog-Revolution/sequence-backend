@@ -12,6 +12,7 @@ import sequence.sequence_member.member.repository.*;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -37,15 +38,16 @@ public class MemberService {
         memberRepository.save(memberEntity);
 
         MemberEntity memberEntityCopy =  memberRepository.findByUsername(memberDTO.getUsername()).get();
-        AwardEntity awardEntity = AwardEntity.toAwardEntity(memberDTO,memberEntityCopy);
-        ExperienceEntity experienceEntity = ExperienceEntity.toExperienceEntity(memberDTO,memberEntityCopy);
-        EducationEntity educationEntity = EducationEntity.toEducationEntity(memberDTO,memberEntityCopy);
-        CareerEntity careerEntity = CareerEntity.toCareerEntity(memberDTO,memberEntityCopy);
 
-        experienceRepository.save(experienceEntity);
+        List<AwardEntity> awardEntities = AwardEntity.toAwardEntity(memberDTO,memberEntityCopy);
+        List<ExperienceEntity> experienceEntities = ExperienceEntity.toExperienceEntity(memberDTO,memberEntityCopy);
+        List<CareerEntity> careerEntities  = CareerEntity.toCareerEntity(memberDTO,memberEntityCopy);
+        EducationEntity educationEntity = EducationEntity.toEducationEntity(memberDTO,memberEntityCopy);
+
+        experienceRepository.saveAll(experienceEntities);
+        careerRepository.saveAll(careerEntities);
+        awardRepository.saveAll(awardEntities);
         educationRepository.save(educationEntity);
-        careerRepository.save(careerEntity);
-        awardRepository.save(awardEntity);
     }
 
     /* 회원가입 시, 유효성 체크 */
