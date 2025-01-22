@@ -1,4 +1,4 @@
-package sequence.sequence_member.member;
+package sequence.sequence_member;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
