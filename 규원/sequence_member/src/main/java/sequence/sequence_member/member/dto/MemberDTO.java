@@ -9,11 +9,15 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import lombok.*;
-import sequence.sequence_member.member.entity.EducationEntity;
+
+import sequence.sequence_member.member.entity.AwardEntity;
+import sequence.sequence_member.member.entity.CareerEntity;
+import sequence.sequence_member.member.entity.EducationEntity.*;
+import sequence.sequence_member.member.entity.ExperienceEntity;
 import sequence.sequence_member.member.entity.MemberEntity.Gender;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -54,17 +58,12 @@ public class MemberDTO {
     private String major;
     private Date entrance_date;
     private Date graduation_date;
-    private EducationEntity.Degree degree;
-    private EducationEntity.SkillCategory skill_category;
-    private ArrayList<EducationEntity.DesiredJob> desiredJob;
-    private String activity_name;
-    private Date activity_duration;
-    private String activity_description;
-    private String career_name;
-    private Date career_duration;
-    private String career_description;
-    private String award_name;
-    private Date award_duration;
-    private String award_description;
+    private Degree degree;
+
+    private List<SkillCategory> skill_category;
+    private List<DesiredJob> desired_job;
+    private List<ExperienceEntity> experiences;
+    private List<CareerEntity> careers;
+    private List<AwardEntity> awards;
 
 }

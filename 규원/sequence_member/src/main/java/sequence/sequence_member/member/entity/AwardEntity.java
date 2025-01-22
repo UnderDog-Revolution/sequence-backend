@@ -4,7 +4,11 @@ import jakarta.persistence.*;
 import lombok.Data;
 import sequence.sequence_member.member.dto.MemberDTO;
 
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 
 @Entity
 @Data
@@ -28,15 +32,22 @@ public class AwardEntity {
     @Column
     private String awardDescription;
 
-    public static AwardEntity toAwardEntity(MemberDTO memberDTO, MemberEntity memberEntity){
-        AwardEntity awardEntity = new AwardEntity();
 
-        awardEntity.setAwardName(memberDTO.getAward_name());
-        awardEntity.setAwardDuration(memberDTO.getAward_duration());
-        awardEntity.setAwardDescription(memberDTO.getAward_description());
-        awardEntity.setMember(memberEntity);
+    public static List<AwardEntity> toAwardEntity(MemberDTO memberDTO, MemberEntity memberEntity) {
+        List<AwardEntity> awardEntities = new ArrayList<>();
 
-        return awardEntity;
+        for (int i = 0; i < memberDTO.getAwards().size(); i++) {
+            AwardEntity awardEntity = new AwardEntity();
+
+            awardEntity.setAwardName(memberDTO.getAwards().get(i).getAwardName());
+            awardEntity.setAwardDescription(memberDTO.getAwards().get(i).getAwardDescription());
+            awardEntity.setAwardDuration(memberDTO.getAwards().get(i).getAwardDuration());
+            awardEntity.setMember(memberEntity);
+
+            awardEntities.add(awardEntity);
+        }
+        return awardEntities;
+
     }
 
 }
