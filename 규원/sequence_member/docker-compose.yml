@@ -3,7 +3,7 @@ services:
 
   sequence-service:
 #    image: highqualitycoffee/seq_mem_spring:latest
-    image: seq_mem_spring
+    image: seq_del_spring
     build:
       context: .
       dockerfile: Dockerfile
