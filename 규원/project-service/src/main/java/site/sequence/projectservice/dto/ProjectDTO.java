@@ -9,7 +9,7 @@ import site.sequence.projectservice.enums.Step;
 
 @Getter
 @Builder
-public class ProjectIDTO {
+public class ProjectDTO {
 
     private String title;
     private Period period;

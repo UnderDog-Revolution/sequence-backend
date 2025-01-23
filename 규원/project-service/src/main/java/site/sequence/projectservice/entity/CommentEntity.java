@@ -6,10 +6,12 @@ import org.springframework.data.annotation.LastModifiedDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import site.sequence.projectservice.utils.BaseTimeEntity;
+
 @Entity
 @Data
 @Table(name = "comment")
-public class CommentEntity {
+public class CommentEntity extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,12 +21,7 @@ public class CommentEntity {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
     private String writer;
-    @CreatedDate
-    @Column(nullable = false)
-    private LocalDateTime createDate;
-    @LastModifiedDate
-    @Column(nullable = false)
-    private LocalDateTime modifiedDateTime;
+
     @ManyToOne
     @JoinColumn
     private CommentEntity parentComment;

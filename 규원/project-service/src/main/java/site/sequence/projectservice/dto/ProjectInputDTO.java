@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.List;
-import lombok.Builder;
 import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
 import site.sequence.projectservice.enums.Category;
@@ -14,14 +13,13 @@ import site.sequence.projectservice.enums.Period;
 import site.sequence.projectservice.enums.Step;
 
 @Getter
-@Builder
 public class ProjectInputDTO {
 
     @NotEmpty(message = "제목을 입력해주세요.")
     @Length(min=1, max=40,message = "제목은 30자 이하로 입력해주세요.")
     private String title;
 
-    @NotEmpty(message = "기간을 선택해주세요.")
+    @NotNull(message = "기간을 선택해주세요.")
     private Period period;
 
     @NotNull(message = "카테고리를 선택해주세요.")
@@ -45,7 +43,7 @@ public class ProjectInputDTO {
     @NotNull(message = "현재 진행 단계를 선택 해주세요.")
     private Step step;
 
-    private List<String> inviteMembers;
+    private List<String> invitedMembers;
 
     @Length(min=1,max = 450, message = "소개글은 1자이상 450자 이하여야합니다.")
     private String introduce;
