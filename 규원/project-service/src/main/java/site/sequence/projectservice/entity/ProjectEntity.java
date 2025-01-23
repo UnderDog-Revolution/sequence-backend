@@ -1,5 +1,6 @@
 package site.sequence.projectservice.entity;
 import jakarta.persistence.*;
+import java.util.List;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -44,14 +45,12 @@ public class ProjectEntity {
     @Column(nullable = false)
     private Step step;
 
-    @Column(nullable = false)
-    private String members;
-
     @Column(columnDefinition = "TEXT", nullable = false)
     private String introduce;
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String article;
+
     private String link;
 
     @Column(nullable = false)
@@ -65,4 +64,6 @@ public class ProjectEntity {
     @Column(nullable = false)
     private LocalDateTime modifiedDateTime;
 
+    @OneToMany(mappedBy = "project",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ProjectMemberEntity> members;
 }

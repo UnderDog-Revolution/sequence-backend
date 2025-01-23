@@ -2,5 +2,9 @@ package site.sequence.projectservice.enums;
 
 
 public enum Step {
-    BeforeStart, Planning, Designing, Developing, InBusiness
+    BEFORE_START,
+    PLANNING,
+    DESIGNING,
+    DEVELOPING,
+    IN_BUSINESS
 }
