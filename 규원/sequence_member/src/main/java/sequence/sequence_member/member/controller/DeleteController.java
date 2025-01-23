@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletRegistration;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,6 +16,7 @@ import sequence.sequence_member.member.dto.DeleteDto;
 import sequence.sequence_member.member.dto.MemberDTO;
 import sequence.sequence_member.member.jwt.JWTUtil;
 import sequence.sequence_member.member.repository.MemberRepository;
+import sequence.sequence_member.member.repository.RefreshRepository;
 import sequence.sequence_member.member.response.ResponseMsg;
 import sequence.sequence_member.member.service.DeletedService;
 
@@ -28,18 +30,20 @@ public class DeleteController {
     private final MemberRepository memberRepository;
     private final JWTUtil jwtUtil;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final RefreshRepository refreshRepository;
 
     @Autowired
     public DeleteController(
             DeletedService deletedUserService,
             MemberRepository memberRepository,
             JWTUtil jwtUtil,
-            BCryptPasswordEncoder bCryptPasswordEncoder)
+            BCryptPasswordEncoder bCryptPasswordEncoder, RefreshRepository refreshRepository)
     {
         this.deletedUserService = deletedUserService;
         this.memberRepository = memberRepository;
         this.jwtUtil = jwtUtil;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.refreshRepository = refreshRepository;
     }
 
     // 사용자 탈퇴 API
@@ -56,9 +60,15 @@ public class DeleteController {
             }
         }
 
-        //중복 탈퇴 확인
         if (refresh == null) {
             ResponseMsg responseMsg = new ResponseMsg(40201, "토큰을 찾을 수 없습니다.", null);
+            return ResponseEntity.badRequest().body(responseMsg);
+        }
+
+        //DB에 refresh 토큰이 저장되어 있는지 확인
+        Boolean isExist = refreshRepository.existsByRefresh(refresh);
+        if(!isExist){
+            ResponseMsg responseMsg = new ResponseMsg(40202, "토큰이 만료되었습니다.", null);
             return ResponseEntity.badRequest().body(responseMsg);
         }
 
@@ -67,11 +77,11 @@ public class DeleteController {
         var result = memberRepository.findByUsername(username);
         var externalUser = result.get();
 
-        //중복 탈퇴 확인
-        if (deletedUserService.isDeletedUser(externalUser.getUsername())) {
-            ResponseMsg responseMsg = new ResponseMsg(40900, "이미 탈퇴된 계정입니다.", null);
-            return ResponseEntity.badRequest().body(responseMsg);
-        }
+//        //중복 탈퇴 확인
+//        if (deletedUserService.isDeletedUser(externalUser.getUsername())) {
+//            ResponseMsg responseMsg = new ResponseMsg(40900, "이미 탈퇴된 계정입니다.", null);
+//            return ResponseEntity.badRequest().body(responseMsg);
+//        }
 
         //빈칸 확인
         //Password와 ConfirmPassword 비교
@@ -103,7 +113,17 @@ public class DeleteController {
                 "사용자 탈퇴 요청"
         );
 
+        //user 정보 삭제
         deletedUserService.deleteUser(externalUser.getId());
+
+        //로그아웃 진행
+        //refresh db에서 토큰 제거
+        refreshRepository.deleteByRefresh(refresh);
+        //Refresh 토큰 삭제 후, cookie값을 null로 처리해준다.
+        //유효시간 값과 path 값, credential 값 등 여러가지를 처리해준다.
+        Cookie cookie = new Cookie("refresh",null);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
 
         //성공 응답 반환
         ResponseMsg responseMsg = new ResponseMsg(0, "회원 탈퇴가 완료되었습니다.", null);

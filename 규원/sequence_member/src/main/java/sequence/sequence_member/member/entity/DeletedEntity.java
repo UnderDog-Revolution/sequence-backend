@@ -14,10 +14,10 @@ public class DeletedEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long deleteId;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private Long userId;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String username;
 
     @Column(nullable = false)
