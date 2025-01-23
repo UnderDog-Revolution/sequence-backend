@@ -2,11 +2,11 @@ version: '3.8'
 services:
 
   sequence-service:
-#    image: highqualitycoffee/seq_mem_spring:latest
-    image: seq_del_spring
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: highqualitycoffee/seq_mem_spring:latest
+#    image: seq_del_spring
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
     container_name: seq_mem_spring
     restart: always
     ports:

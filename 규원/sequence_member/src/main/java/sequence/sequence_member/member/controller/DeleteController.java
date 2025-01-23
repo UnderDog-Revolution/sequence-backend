@@ -11,9 +11,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-import sequence.sequence_member.deleteAccount.dto.ApiResponseData;
-import sequence.sequence_member.deleteAccount.dto.ApiResponseError;
-import sequence.sequence_member.deleteAccount.dto.Code;
 import sequence.sequence_member.member.dto.DeleteDto;
 import sequence.sequence_member.member.dto.MemberDTO;
 import sequence.sequence_member.member.jwt.JWTUtil;
@@ -59,6 +56,12 @@ public class DeleteController {
             }
         }
 
+        //중복 탈퇴 확인
+        if (refresh == null) {
+            ResponseMsg responseMsg = new ResponseMsg(40201, "토큰을 찾을 수 없습니다.", null);
+            return ResponseEntity.badRequest().body(responseMsg);
+        }
+
         String username = jwtUtil.getUsername(refresh);
 
         var result = memberRepository.findByUsername(username);
@@ -66,42 +69,31 @@ public class DeleteController {
 
         //중복 탈퇴 확인
         if (deletedUserService.isDeletedUser(externalUser.getUsername())) {
-            return ResponseEntity.status(Code.DUPLICATE_RESOURCE.getStatus()).body(
-                    ApiResponseError.of(Code.DUPLICATE_RESOURCE, "이미 탈퇴된 계정입니다.")
-            );
+            ResponseMsg responseMsg = new ResponseMsg(40900, "이미 탈퇴된 계정입니다.", null);
+            return ResponseEntity.badRequest().body(responseMsg);
         }
 
         //빈칸 확인
         //Password와 ConfirmPassword 비교
         if (deleteDto.getPassword() == null || deleteDto.getPassword().isEmpty()) {
-            return ResponseEntity.status(Code.NULL_INPUT_VALUE.getStatus()).body(
-                    ApiResponseError.of(Code.NULL_INPUT_VALUE)
-            );
+            ResponseMsg responseMsg = new ResponseMsg(100, "비밀번호가 서로 다릅니다.", null);
+            return ResponseEntity.badRequest().body(responseMsg);
         }
+
         if (deleteDto.getConfirm_password() == null || deleteDto.getConfirm_password().isEmpty()) {
-            return ResponseEntity.status(Code.NULL_INPUT_VALUE.getStatus()).body(
-                    ApiResponseError.of(Code.NULL_INPUT_VALUE)
-            );
+            ResponseMsg responseMsg = new ResponseMsg(40002, "입력값이 없는 항목이 있습니다.", null);
+            return ResponseEntity.badRequest().body(responseMsg);
         }
         if (!deleteDto.getPassword().equals(deleteDto.getConfirm_password())) {
-            return ResponseEntity.status(Code.VALIDATION_ERROR.getStatus()).body(
-                    ApiResponseError.of(Code.VALIDATION_ERROR, "비밀번호가 서로 다릅니다.")
-            );
+            ResponseMsg responseMsg = new ResponseMsg(40002, "입력값이 없는 항목이 있습니다.", null);
+            return ResponseEntity.badRequest().body(responseMsg);
         }
 
         //토큰의 유저 이름을 조회 비교
         if (!bCryptPasswordEncoder.matches(deleteDto.getPassword(), externalUser.getPassword())) {
-            return ResponseEntity.status(Code.VALIDATION_ERROR.getStatus()).body(
-                    ApiResponseError.of(Code.VALIDATION_ERROR, "비밀번호가 일치하지 않습니다.")
-            );
+            ResponseMsg responseMsg = new ResponseMsg(100, "비밀번호가 일치하지 않습니다.", null);
+            return ResponseEntity.badRequest().body(responseMsg);
         }
-
-//        //토큰의 유저 이름을 조회 비교 (테스트용)
-//        if (!deleteDto.getPassword().equals(externalUser.getPassword())){
-//            return ResponseEntity.status(Code.VALIDATION_ERROR.getStatus()).body(
-//                    ApiResponseError.of(Code.VALIDATION_ERROR, "비밀번호가 일치하지 않습니다.")
-//            );
-//        }
 
         // 삭제된 사용자 기록 저장
         deletedUserService.saveDeletedUser(
@@ -119,31 +111,35 @@ public class DeleteController {
     }
 
     // userId로 탈퇴 여부를 확인하는 API
-    @GetMapping("/api/user/isDeleted/id/{id}")
+    @GetMapping("/api/user/isDeleted/id")
     @ResponseBody
-    public ResponseEntity<?> checkIfUserIsDeleted(@PathVariable("id") Long userId) {
+    public ResponseEntity<?> checkIfUserIsDeleted(@RequestParam(name = "userId",required = false) Long userId) {
         // 탈퇴 여부 확인
         boolean isDeleted = deletedUserService.isDeletedUser(userId);
+        String result = "탈퇴되지 않은 사용자입니다.";
 
-        // 응답 생성
-        return ResponseEntity.ok(ApiResponseData.of(
-                Map.of("userId", userId, "isDeleted", isDeleted),
-                isDeleted ? "탈퇴된 사용자입니다." : "탈퇴되지 않은 사용자입니다."
-        ));
+        if (isDeleted) {
+            result = "탈퇴된 사용자입니다.";
+        }
+
+        ResponseMsg responseMsg = new ResponseMsg(0, result, null);
+        return ResponseEntity.ok(responseMsg);
     }
-
+    
     // username으로 탈퇴 여부를 확인하는 API
-    @GetMapping("/api/user/isDeleted/username/{username}")
+    @GetMapping("/api/user/isDeleted/username")
     @ResponseBody
-    public ResponseEntity<?> checkIfUserIsDeletedWithUsername(@PathVariable("username") String username) {
+    public ResponseEntity<?> checkIfUserIsDeletedWithUsername(@RequestParam(name = "username",required = false) String username) {
         // 탈퇴 여부 확인
         boolean isDeleted = deletedUserService.isDeletedUser(username);
+        String result = "탈퇴되지 않은 사용자입니다.";
 
-        // 응답 생성
-        return ResponseEntity.ok(ApiResponseData.of(
-                Map.of("username", username, "isDeleted", isDeleted),
-                isDeleted ? "탈퇴된 사용자입니다." : "탈퇴되지 않은 사용자입니다."
-        ));
+        if (isDeleted) {
+            result = "탈퇴된 사용자입니다.";
+        }
+
+        ResponseMsg responseMsg = new ResponseMsg(0, result, null);
+        return ResponseEntity.ok(responseMsg);
     }
 
 }
