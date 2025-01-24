@@ -1,6 +1,7 @@
 package site.sequence.projectservice.entity;
 import jakarta.persistence.*;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -63,4 +64,12 @@ public class ProjectEntity extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "project",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProjectMemberEntity> members;
+
+    // List<ProjectMemberEntity> 에서 username만을 가지고 있는 List<String> 반환
+    public List<String> getMemberUsernames() {
+        return this.getMembers() // List<ProjectMemberEntity> 반환
+                .stream() // Stream<ProjectMemberEntity>
+                .map(ProjectMemberEntity::getUsername) // 각 객체의 username 필드 추출
+                .collect(Collectors.toList()); // List<String>으로 변환
+    }
 }
