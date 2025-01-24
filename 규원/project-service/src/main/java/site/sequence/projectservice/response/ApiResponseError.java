@@ -5,16 +5,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class ApiResponseError {
-
-    private Integer code;
-    private String message;
+@SuperBuilder
+public class ApiResponseError extends ApiResponse{
 
     public static ApiResponseError of(Code code) {
         return ApiResponseError.builder()
