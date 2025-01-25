@@ -13,7 +13,7 @@ public enum Code {
     /**
      * 성공 0번대
      */
-    SUCCESS(HttpStatus.OK, 0, "성공적으로 처리되었습니다."),
+    SUCCESS(HttpStatus.OK, 200, "성공적으로 처리되었습니다."),
 
     /**
      * VALIDATION 관련 100번대
