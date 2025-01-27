@@ -40,4 +40,8 @@ public class ProjectService {
         return projectRepository.findProjectsByFilterdSearch(title);
     }
 
+    public List<ProjectEntity> getAllProjects(){
+        return projectRepository.findAll();
+    }
+
 }

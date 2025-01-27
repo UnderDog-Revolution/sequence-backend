@@ -57,4 +57,15 @@ public class ProjectController {
         return ApiResponseData.of(projectEntities, "프로젝트 조회가 완료되었습니다");
     }
 
+    @GetMapping("/api/project/list")
+    public ApiResponseData<List<ProjectEntity>> findProjects(){
+        List<ProjectEntity> projectEntities = new ArrayList<>(projectService.getAllProjects());
+
+        if(projectEntities.isEmpty()){
+            return ApiResponseData.of(projectEntities, "조회된 프로젝트가 없습니다.");
+        }
+
+        return ApiResponseData.of(projectEntities, "모든 프로젝트 조회가 완료되었습니다.");
+    }
+
 }
