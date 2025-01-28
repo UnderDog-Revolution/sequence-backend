@@ -31,12 +31,12 @@ public class ProjectController {
     }
 
     @GetMapping("/api/project/filter/keyword")
-    public ApiResponseData<List<ProjectEntity>> filterKeyword(@RequestParam Category category,
-                                                              @RequestParam String periodKey,
+    public ApiResponseData<List<ProjectEntity>> filterKeyword(@RequestParam(required = false) Category category,
+                                                              @RequestParam(required = false) String periodKey,
                                                               @RequestParam(required = false) String roles,
                                                               @RequestParam(required = false) String skills,
-                                                              @RequestParam MeetingOption meetingOption,
-                                                              @RequestParam Step step){
+                                                              @RequestParam(required = false) MeetingOption meetingOption,
+                                                              @RequestParam(required = false) Step step){
         List<ProjectEntity> projectEntities = new ArrayList<>(projectService.getProjectsByKeywords(category,periodKey,roles,skills,meetingOption,step));
 
         //조회된 프로젝트가 하나도 없는 경우

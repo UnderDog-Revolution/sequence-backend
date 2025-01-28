@@ -32,6 +32,7 @@ public class ProjectService {
                                                      String skills,
                                                      MeetingOption meetingOption,
                                                      Step step){
+
         Period period = PeriodMapper.PeriodCheck(periodKey);
         return projectRepository.findProjectsByFilteredKeywords(category,period,roles,skills,meetingOption,step);
     }

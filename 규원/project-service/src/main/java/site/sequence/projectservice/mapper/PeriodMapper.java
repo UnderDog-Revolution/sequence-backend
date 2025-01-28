@@ -18,6 +18,9 @@ public class PeriodMapper{
 
     //유효하지 않은 키워드가 들어올 경우 예외처리
     public static Period PeriodCheck(String keyword){
+        //keyword가 없을 경우, period값을 null로 반환하여 인자 값에 비어있는 값이 들어가는 것을 방지
+        if(keyword==null) return null;
+
         Period period = KeywordToPeriod.get(keyword);
         if(period == null){
             throw new IllegalArgumentException("잘못된 키워드입니다: " + keyword);
