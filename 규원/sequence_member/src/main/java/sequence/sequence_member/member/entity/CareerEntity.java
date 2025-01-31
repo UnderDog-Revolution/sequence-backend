@@ -2,17 +2,17 @@ package sequence.sequence_member.member.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import sequence.sequence_member.member.dto.MemberDTO;
-
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
 @Entity
 @Data
 @Table(name="career")
+@NoArgsConstructor
 public class CareerEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +32,12 @@ public class CareerEntity {
     @Column
     private String careerDescription;
 
+    public CareerEntity(String careerName, Date careerDuration, String careerDescription, MemberEntity member) {
+        this.careerName = careerName;
+        this.careerDuration = careerDuration;
+        this.careerDescription = careerDescription;
+        this.member = member;
+    }
 
     public static List<CareerEntity> toCareerEntity(MemberDTO memberDTO, MemberEntity memberEntity){
         List<CareerEntity> careerEntities = new ArrayList<>();
@@ -47,6 +53,5 @@ public class CareerEntity {
             careerEntities.add(careerEntity);
         }
         return careerEntities;
-
     }
 }

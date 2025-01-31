@@ -3,6 +3,7 @@ package sequence.sequence_member.member.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import lombok.NoArgsConstructor;
 import sequence.sequence_member.member.converter.DesiredJobConverter;
 import sequence.sequence_member.member.converter.SkillCategoryConverter;
 
@@ -14,6 +15,7 @@ import java.util.List;
 @Entity
 @Data
 @Table(name="education")
+@NoArgsConstructor
 public class EducationEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,6 +54,21 @@ public class EducationEntity {
     @Convert(converter = DesiredJobConverter.class)
     @Column(name = "desired_job")
     private List<DesiredJob> desiredJob;
+
+    public EducationEntity(
+            String schoolName, String major, Date entranceDate,
+                           Date graduationDate, Degree degree, List<SkillCategory> skillCategory,
+                           List<DesiredJob> desiredJob, MemberEntity member
+    ) {
+        this.schoolName = schoolName;
+        this.major = major;
+        this.entranceDate = entranceDate;
+        this.graduationDate = graduationDate;
+        this.degree = degree;
+        this.skillCategory = skillCategory;
+        this.desiredJob = desiredJob;
+        this.member = member;
+    }
 
     public enum Degree {
         ENROLLMENT, LEAVE_OF_ABSENCE, GRADUATION, MASTER, DOCTORATE, EXPELLED, DROPOUT;

@@ -2,17 +2,17 @@ package sequence.sequence_member.member.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import sequence.sequence_member.member.dto.MemberDTO;
-
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
 @Entity
 @Data
 @Table(name = "award")
+@NoArgsConstructor
 public class AwardEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +32,12 @@ public class AwardEntity {
     @Column
     private String awardDescription;
 
+    public AwardEntity(String awardName, Date awardDuration, String awardDescription, MemberEntity member) {
+        this.awardName = awardName;
+        this.awardDuration = awardDuration;
+        this.awardDescription = awardDescription;
+        this.member = member;
+    }
 
     public static List<AwardEntity> toAwardEntity(MemberDTO memberDTO, MemberEntity memberEntity) {
         List<AwardEntity> awardEntities = new ArrayList<>();
@@ -47,7 +53,5 @@ public class AwardEntity {
             awardEntities.add(awardEntity);
         }
         return awardEntities;
-
     }
-
 }
