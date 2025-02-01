@@ -1,9 +1,14 @@
 package sequence.sequence_member.report.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "reports")
 public class ReportEntity {
 
@@ -12,6 +17,7 @@ public class ReportEntity {
     private Long id;
 
     private String name;
+    private String reporter;
     private String birthdate;
     private String education;
 
@@ -24,8 +30,9 @@ public class ReportEntity {
 
     public ReportEntity() {}
 
-    public ReportEntity(String name, String birthdate, String education, List<String> reportTypes, String reportDetail) {
+    public ReportEntity(String name, String reporter, String birthdate, String education, List<String> reportTypes, String reportDetail) {
         this.name = name;
+        this.reporter = reporter;
         this.birthdate = birthdate;
         this.education = education;
         this.reportDetail = reportDetail;
@@ -46,6 +53,14 @@ public class ReportEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getReporter() {
+        return reporter;
+    }
+
+    public void setReporter(String name) {
+        this.reporter = name;
     }
 
     public String getBirthdate() {
