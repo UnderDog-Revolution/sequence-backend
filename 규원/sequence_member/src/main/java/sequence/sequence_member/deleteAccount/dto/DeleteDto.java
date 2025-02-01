@@ -1,4 +1,4 @@
-package sequence.sequence_member.member.dto;
+package sequence.sequence_member.deleteAccount.dto;
 
 import lombok.*;
 

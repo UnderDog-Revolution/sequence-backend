@@ -7,7 +7,7 @@ services:
 #    build:
 #      context: .
 #      dockerfile: Dockerfile
-    container_name: seq_mem_spring
+#    container_name: seq_mem_spring
     restart: always
     ports:
       - "8080:8080"

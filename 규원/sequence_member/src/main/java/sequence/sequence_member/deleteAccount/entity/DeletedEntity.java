@@ -1,4 +1,4 @@
-package sequence.sequence_member.member.entity;
+package sequence.sequence_member.deleteAccount.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;

@@ -1,9 +1,9 @@
-package sequence.sequence_member.member.service;
+package sequence.sequence_member.deleteAccount.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sequence.sequence_member.member.entity.DeletedEntity;
-import sequence.sequence_member.member.repository.DeletedRepository;
+import sequence.sequence_member.deleteAccount.entity.DeletedEntity;
+import sequence.sequence_member.deleteAccount.repository.DeletedRepository;
 import sequence.sequence_member.member.repository.ExperienceRepository;
 import sequence.sequence_member.member.repository.MemberRepository;
 
