@@ -46,4 +46,16 @@ public class ReportEntity {
         return reportEntity;
     }
 
+    //신고 정보를 DTO에서 엔티티로 변환하는 메서드
+    public static ReportEntity toReportEntity(MemberEntity reporter, MemberEntity reported, String reportTypes, String reportDetail) {
+        ReportEntity reportEntity = new ReportEntity();
+        reportEntity.setReporter(reporter);
+        reportEntity.setReported(reported);
+        reportEntity.setReportTypes(reportTypes);
+        reportEntity.setReportDetail(reportDetail);
+        reportEntity.setReportDate(LocalDateTime.now());
+        return reportEntity;
+    }
+
+
 }

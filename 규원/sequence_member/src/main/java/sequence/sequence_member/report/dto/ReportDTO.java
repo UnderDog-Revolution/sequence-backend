@@ -33,15 +33,6 @@ public class ReportDTO {
     private Long reporterId;
     private Long reportedId;
 
-    //신고 정보를 DTO에서 엔티티로 변환하는 메서드
-    public static ReportEntity toReportEntity(MemberEntity reporter, MemberEntity reported, String reportDetail) {
-        ReportEntity reportEntity = new ReportEntity();
-        reportEntity.setReporter(reporter);
-        reportEntity.setReported(reported);
-        reportEntity.setReportDetail(reportDetail);
-        reportEntity.setReportDate(LocalDateTime.now());
-        return reportEntity;
-    }
 
     // 신고자 ID 설정 메서드 추가
     public void setReporterId(Long reporterId) {
@@ -52,6 +43,18 @@ public class ReportDTO {
     public void setReportedId(Long reportedId) {
         this.reportedId = reportedId;
     }
+
+    //신고 정보를 DTO에서 엔티티로 변환하는 메서드
+    public static ReportEntity toReportEntity(MemberEntity reporter, MemberEntity reported, String reportTypes, String reportDetail) {
+        ReportEntity reportEntity = new ReportEntity();
+        reportEntity.setReporter(reporter);
+        reportEntity.setReported(reported);
+        reportEntity.setReportTypes(reportTypes);
+        reportEntity.setReportDetail(reportDetail);
+        reportEntity.setReportDate(LocalDateTime.now());
+        return reportEntity;
+    }
+
 
     //Entity -> DTO 변환
     public static ReportDTO fromEntity(ReportEntity reportEntity) {
