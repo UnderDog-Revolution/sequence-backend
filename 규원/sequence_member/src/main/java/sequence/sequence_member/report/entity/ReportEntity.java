@@ -1,38 +1,49 @@
 package sequence.sequence_member.report.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import sequence.sequence_member.member.entity.MemberEntity;
+import sequence.sequence_member.report.dto.ReportDTO;
+
+import java.time.LocalDateTime;
 
 @Entity
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
 @Table(name = "reports")
 public class ReportEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long reportId; // 신고 ID
 
     @ManyToOne
-    @JoinColumn(name = "member_id", nullable = false)
-    private MemberEntity member;
+    @JoinColumn(name = "reporter_id", nullable = false)
+    private MemberEntity reporter; // 신고자
 
-    @Column(name = "report_type", nullable = false)
-    private String reportType;
+    @ManyToOne
+    @JoinColumn(name = "reported_id", nullable = false)
+    private MemberEntity reported; // 피신고자
 
-    @Column(name = "description", nullable = false, length = 500)
-    private String description;
+    @Column(name = "report_types", nullable = false)
+    private String reportTypes; // 신고 유형
 
-    @Column(name = "status", nullable = false)
-    private String status = "Pending";
+    @Column(name = "report_detail", nullable = false, length = 500)
+    private String reportDetail; // 신고 상세 내용
 
-    public static ReportEntity toEntity(MemberEntity member, String reportType, String description) {
-        ReportEntity report = new ReportEntity();
-        report.setMember(member);
-        report.setReportType(reportType);
-        report.setDescription(description);
-        return report;
+    @Column(name = "report_date", nullable = false)
+    private LocalDateTime reportDate; // 신고 일자
+
+    // DTO -> Entity 변환 (수정된 부분)
+    public static ReportEntity toReportEntity(ReportDTO reportDTO, MemberEntity reporter, MemberEntity reported) {
+        ReportEntity reportEntity = new ReportEntity();
+        reportEntity.setReporter(reporter);
+        reportEntity.setReported(reported);
+        reportEntity.setReportTypes(reportDTO.getReportTypes());
+        reportEntity.setReportDetail(reportDTO.getReportDetail());
+        reportEntity.setReportDate(LocalDateTime.now()); // 현재 시간 설정
+        return reportEntity;
     }
+
 }

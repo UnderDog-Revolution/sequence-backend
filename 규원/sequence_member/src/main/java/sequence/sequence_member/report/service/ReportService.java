@@ -2,13 +2,13 @@ package sequence.sequence_member.report.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import sequence.sequence_member.member.entity.MemberEntity;
 import sequence.sequence_member.member.repository.MemberRepository;
 import sequence.sequence_member.report.dto.ReportDTO;
 import sequence.sequence_member.report.entity.ReportEntity;
 import sequence.sequence_member.report.repository.ReportRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,18 +18,35 @@ public class ReportService {
     private final ReportRepository reportRepository;
     private final MemberRepository memberRepository;
 
-    @Transactional
-    public String createReport(ReportDTO reportDTO) {
-        Optional<MemberEntity> optionalMember = memberRepository.findById(reportDTO.getMemberId());
-
-        if (optionalMember.isEmpty()) {
-            return "회원 정보를 찾을 수 없습니다.";
+    public ReportEntity submitReport(ReportDTO reportDTO) {
+        if (reportDTO.getReportDetail() == null || reportDTO.getReportDetail().isEmpty()) {
+            throw new IllegalArgumentException("신고 내용을 작성해주세요.");
         }
 
-        MemberEntity member = optionalMember.get();
-        ReportEntity reportEntity = ReportEntity.toEntity(member, reportDTO.getReportType(), reportDTO.getDescription());
-        reportRepository.save(reportEntity);
+        if (reportDTO.getReportDetail().length() > 500) {
+            throw new IllegalArgumentException("신고 내용은 500자 이하로 작성해주세요.");
+        }
 
-        return "신고가 성공적으로 접수되었습니다.";
+        // 신고자 조회
+        MemberEntity reporter = memberRepository.findById(reportDTO.getReporterId())
+                .orElseThrow(() -> new IllegalArgumentException("신고자를 찾을 수 없습니다."));
+
+        // 피신고자 조회
+        MemberEntity reported = memberRepository.findById(reportDTO.getReportedId())
+                .orElseThrow(() -> new IllegalArgumentException("피신고자를 찾을 수 없습니다."));
+
+        // 신고 저장
+        ReportEntity reportEntity = ReportEntity.toReportEntity(reporter, reported, reportDTO.getReportTypes(), reportDTO.getReportDetail());
+        return reportRepository.save(reportEntity);
+    }
+
+    //특정 신고 조회
+    public Optional<ReportEntity> getReportById(Long reportId) {
+        return reportRepository.findById(reportId);
+    }
+
+    //특정 사용자가 작성한 신고 내역 조회
+    public List<ReportEntity> getReportsByReporter(Long reporterId) {
+        return reportRepository.findByReporterId(reporterId);
     }
 }
