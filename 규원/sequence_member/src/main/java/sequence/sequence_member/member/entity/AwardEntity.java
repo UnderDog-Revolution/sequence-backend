@@ -54,4 +54,10 @@ public class AwardEntity {
         }
         return awardEntities;
     }
+
+    public void updateAward(String awardName, Date awardDuration, String awardDescription) {
+        this.awardName = awardName;
+        this.awardDuration = awardDuration;
+        this.awardDescription = awardDescription;
+    }
 }

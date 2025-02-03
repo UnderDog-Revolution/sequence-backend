@@ -56,4 +56,10 @@ public class ExperienceEntity {
 
         return experienceEntities;
     }
+
+    public void updateExperience(String activityName, Date activityDuration, String activityDescription) {
+        this.activityName = activityName;
+        this.activityDuration = activityDuration;
+        this.activityDescription = activityDescription;
+    }
 }

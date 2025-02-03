@@ -12,7 +12,6 @@ import java.util.List;
 @Data
 public class MyPageDTO {
     private Long userId;
-    private String password;
     private String name;
     private Date birth;
     private Gender gender;

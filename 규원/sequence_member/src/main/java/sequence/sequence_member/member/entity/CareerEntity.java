@@ -54,4 +54,10 @@ public class CareerEntity {
         }
         return careerEntities;
     }
+
+    public void updateCareer(String careerName, Date careerDuration, String careerDescription) {
+        this.careerName = careerName;
+        this.careerDuration = careerDuration;
+        this.careerDescription = careerDescription;
+    }
 }

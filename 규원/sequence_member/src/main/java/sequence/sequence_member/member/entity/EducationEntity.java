@@ -57,8 +57,8 @@ public class EducationEntity {
 
     public EducationEntity(
             String schoolName, String major, Date entranceDate,
-                           Date graduationDate, Degree degree, List<SkillCategory> skillCategory,
-                           List<DesiredJob> desiredJob, MemberEntity member
+            Date graduationDate, Degree degree, List<SkillCategory> skillCategory,
+            List<DesiredJob> desiredJob, MemberEntity member
     ) {
         this.schoolName = schoolName;
         this.major = major;
@@ -68,6 +68,20 @@ public class EducationEntity {
         this.skillCategory = skillCategory;
         this.desiredJob = desiredJob;
         this.member = member;
+    }
+
+    public void updateEducation(
+            String schoolName, String major, Date entranceDate,
+            Date graduationDate, Degree degree, List<SkillCategory> skillCategory,
+            List<DesiredJob> desiredJob
+    ) {
+        this.schoolName = schoolName;
+        this.major = major;
+        this.entranceDate = entranceDate;
+        this.graduationDate = graduationDate;
+        this.degree = degree;
+        this.skillCategory = skillCategory;
+        this.desiredJob = desiredJob;
     }
 
     public enum Degree {
